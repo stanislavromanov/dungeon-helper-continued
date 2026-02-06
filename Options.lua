@@ -79,6 +79,6 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
 
     SLASH_DUNGEONHELPERCONTINUED1 = "/dhc"
     SlashCmdList["DUNGEONHELPERCONTINUED"] = function()
-        Settings.OpenToCategory(category.ID)
+        Settings.OpenToCategory(category:GetID())
     end
 end)

@@ -7,6 +7,7 @@ local defaults = {
 }
 
 local startTime = nil
+local lastTimeStr = nil
 
 local function FormatTime(seconds)
     local h = math.floor(seconds / 3600)
@@ -27,8 +28,11 @@ StaticPopupDialogs["DUNGEONHELPER_LEAVE_CONFIRM"] = {
     button1 = "Yes",
     button2 = "No",
     OnAccept = function()
+        if lastTimeStr and DungeonHelperContinuedDB.reportTimeToParty then
+            C_ChatInfo.SendChatMessage("Dungeon completed in: " .. lastTimeStr, "INSTANCE_CHAT")
+        end
         C_ChatInfo.SendChatMessage(DungeonHelperContinuedDB.goodbyeMessage, "INSTANCE_CHAT")
-        C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
+        LFGTeleport(true)
     end,
     timeout = 0,
     whileDead = true,
@@ -75,13 +79,8 @@ frame:SetScript("OnEvent", function(self, event, ...)
             elapsed = GetTime() - startTime
         end
 
-        local timeStr = FormatTime(elapsed)
-
-        if DungeonHelperContinuedDB.reportTimeToParty then
-            C_ChatInfo.SendChatMessage("Dungeon completed in: " .. timeStr, "INSTANCE_CHAT")
-        else
-            print("Dungeon completed in: " .. timeStr)
-        end
+        lastTimeStr = FormatTime(elapsed)
+        print("Dungeon completed in: " .. lastTimeStr)
 
         StaticPopup_Show("DUNGEONHELPER_LEAVE_CONFIRM")
     end

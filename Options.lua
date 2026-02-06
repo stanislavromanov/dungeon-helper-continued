@@ -46,9 +46,11 @@ local function CreateOptionsFrame()
     end)
 
     -- Report Time Checkbox
-    local reportCheck = CreateFrame("CheckButton", "DHCReportCheckButton", panel, "InterfaceOptionsCheckButtonTemplate")
+    local reportCheck = CreateFrame("CheckButton", "DHCReportCheckButton", panel, "UICheckButtonTemplate")
     reportCheck:SetPoint("TOPLEFT", goodbyeBox, "BOTTOMLEFT", -8, -16)
-    reportCheck.Text:SetText("Report time to party")
+    reportCheck.text = reportCheck.text or reportCheck:CreateFontString(nil, "ARTWORK", "GameFontNormal")
+    reportCheck.text:SetPoint("LEFT", reportCheck, "RIGHT", 4, 0)
+    reportCheck.text:SetText("Report time to party")
     reportCheck:SetScript("OnClick", function(self)
         DungeonHelperContinuedDB.reportTimeToParty = self:GetChecked()
     end)

@@ -74,11 +74,10 @@ frame:SetScript("OnEvent", function(self, event, loadedAddon)
     local panel = CreateOptionsFrame()
 
     local category = Settings.RegisterCanvasLayoutCategory(panel, panel.name)
-    category.ID = addonName
     Settings.RegisterAddOnCategory(category)
 
     SLASH_DUNGEONHELPERCONTINUED1 = "/dhc"
     SlashCmdList["DUNGEONHELPERCONTINUED"] = function()
-        Settings.OpenToCategory(category:GetID())
+        Settings.OpenToCategory(category.ID)
     end
 end)

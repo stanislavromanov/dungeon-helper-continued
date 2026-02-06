@@ -28,11 +28,8 @@ StaticPopupDialogs["DUNGEONHELPER_LEAVE_CONFIRM"] = {
     button1 = "Yes",
     button2 = "No",
     OnAccept = function()
-        if lastTimeStr and DungeonHelperContinuedDB.reportTimeToParty then
-            C_ChatInfo.SendChatMessage("Dungeon completed in: " .. lastTimeStr, "INSTANCE_CHAT")
-        end
         C_ChatInfo.SendChatMessage(DungeonHelperContinuedDB.goodbyeMessage, "INSTANCE_CHAT")
-        LFGTeleport(true)
+        LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
     end,
     timeout = 0,
     whileDead = true,
@@ -81,6 +78,10 @@ frame:SetScript("OnEvent", function(self, event, ...)
 
         lastTimeStr = FormatTime(elapsed)
         print("Dungeon completed in: " .. lastTimeStr)
+
+        if lastTimeStr and DungeonHelperContinuedDB.reportTimeToParty then
+            C_ChatInfo.SendChatMessage("Dungeon completed in: " .. lastTimeStr, "INSTANCE_CHAT")
+        end
 
         StaticPopup_Show("DUNGEONHELPER_LEAVE_CONFIRM")
     end

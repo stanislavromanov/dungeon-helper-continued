@@ -1,0 +1,9 @@
+## Interface: 110207
+## Title: Dungeon Helper Continued
+## Notes: Greets party, tracks dungeon time, and offers quick leave on completion
+## Author: https://github.com/stanislavromanov
+## Version: 1.0.0
+## SavedVariables: DungeonHelperContinuedDB
+## Category: Dungeons & Raids
+DungeonHelperContinued.lua
+Options.lua

@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Determine next version
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Fetch the latest release tag matching 1.*
+          LATEST=$(gh release list --limit 100 --json tagName --jq '[.[] | select(.tagName | test("^1\\.\\d+$"))] | sort_by(.tagName | split(".")[1] | tonumber) | last | .tagName // empty')
+
+          if [ -z "$LATEST" ]; then
+            NEXT="1.0"
+          else
+            NUM="${LATEST#1.}"
+            NEXT="1.$((NUM + 1))"
+          fi
+
+          echo "version=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Next version: $NEXT"
+
+      - name: Build release zip
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          ADDON_DIR="dungeon-helper-continued"
+
+          mkdir -p "$ADDON_DIR"
+          cp dungeon-helper-continued.toc DungeonHelperContinued.lua Options.lua README.md LICENSE "$ADDON_DIR/"
+
+          # Patch version in the .toc copy
+          sed -i "s/^## Version:.*/## Version: $VERSION/" "$ADDON_DIR/dungeon-helper-continued.toc"
+
+          zip -r "dungeon-helper-continued-${VERSION}.zip" "$ADDON_DIR"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          gh release create "$VERSION" \
+            "dungeon-helper-continued-${VERSION}.zip" \
+            --title "v${VERSION}" \
+            --generate-notes

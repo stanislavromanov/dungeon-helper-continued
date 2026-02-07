@@ -1,0 +1,6 @@
+package-as: dungeon-helper-continued
+
+ignore:
+    - CLAUDE.md
+
+enable-nolib-creation: no

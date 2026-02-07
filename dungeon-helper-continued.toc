@@ -2,7 +2,8 @@
 ## Title: Dungeon Helper Continued
 ## Notes: Greets party, tracks dungeon time, and offers quick leave on completion
 ## Author: https://github.com/stanislavromanov
-## Version: 1.0.0
+## Version: @project-version@
+## X-Curse-Project-ID: 1455721
 ## SavedVariables: DungeonHelperContinuedDB
 ## Category: Dungeons & Raids
 DungeonHelperContinued.lua

@@ -28,7 +28,9 @@ StaticPopupDialogs["DUNGEONHELPER_LEAVE_CONFIRM"] = {
     button1 = "Yes",
     button2 = "No",
     OnAccept = function()
-        C_ChatInfo.SendChatMessage(DungeonHelperContinuedDB.goodbyeMessage, "INSTANCE_CHAT")
+        C_Timer.After(0, function()
+            C_ChatInfo.SendChatMessage(DungeonHelperContinuedDB.goodbyeMessage, "INSTANCE_CHAT")
+        end)
         C_Timer.After(1, function()
             C_PartyInfo.LeaveParty(LE_PARTY_CATEGORY_INSTANCE)
         end)

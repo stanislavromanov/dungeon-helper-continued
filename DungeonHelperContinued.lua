@@ -84,9 +84,7 @@ frame:SetScript("OnEvent", function(self, event, ...)
         print("Dungeon completed in: " .. lastTimeStr)
 
         if lastTimeStr and DungeonHelperContinuedDB.reportTimeToParty then
-            C_Timer.After(1, function()
-                C_ChatInfo.SendChatMessage("Dungeon completed in: " .. lastTimeStr, "INSTANCE_CHAT")
-            end)
+            C_ChatInfo.SendChatMessage("Dungeon completed in: " .. lastTimeStr, "INSTANCE_CHAT")
         end
 
         StaticPopup_Show("DUNGEONHELPER_LEAVE_CONFIRM")

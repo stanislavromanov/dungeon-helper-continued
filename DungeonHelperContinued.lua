@@ -9,6 +9,56 @@ local defaults = {
 local startTime = nil
 local lastTimeStr = nil
 
+local function GetCurrentTime()
+    if type(GetServerTime) == "function" then
+        return GetServerTime()
+    end
+
+    return time()
+end
+
+local function IsTrackedInstance()
+    if not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then
+        return false
+    end
+
+    local _, instanceType = GetInstanceInfo()
+    return instanceType == "party" or instanceType == "raid"
+end
+
+local function RestoreRun()
+    local activeRun = DungeonHelperContinuedDB and DungeonHelperContinuedDB.activeRun
+    if activeRun and type(activeRun.startTime) == "number" then
+        startTime = activeRun.startTime
+    else
+        startTime = nil
+    end
+end
+
+local function StartRun(sendGreeting)
+    local instanceName, _, _, _, _, _, _, instanceID = GetInstanceInfo()
+
+    DungeonHelperContinuedDB.activeRun = {
+        startTime = GetCurrentTime(),
+        instanceName = instanceName,
+        instanceID = instanceID,
+    }
+
+    RestoreRun()
+
+    if sendGreeting then
+        C_ChatInfo.SendChatMessage(DungeonHelperContinuedDB.greetingMessage, "INSTANCE_CHAT")
+    end
+end
+
+local function ClearRun()
+    startTime = nil
+
+    if DungeonHelperContinuedDB then
+        DungeonHelperContinuedDB.activeRun = nil
+    end
+end
+
 local function FormatTime(seconds)
     local h = math.floor(seconds / 3600)
     local m = math.floor((seconds % 3600) / 60)
@@ -62,24 +112,26 @@ frame:SetScript("OnEvent", function(self, event, ...)
 
     elseif event == "PLAYER_ENTERING_WORLD" then
         local isInitialLogin, isReloadingUi = ...
-        if isInitialLogin or isReloadingUi then return end
 
-        if not IsInGroup(LE_PARTY_CATEGORY_INSTANCE) then return end
+        if not IsTrackedInstance() then
+            ClearRun()
+            return
+        end
 
-        local _, instanceType = GetInstanceInfo()
-        if instanceType ~= "party" and instanceType ~= "raid" then return end
+        RestoreRun()
+        if startTime then return end
 
-        startTime = GetTime()
-        C_ChatInfo.SendChatMessage(DungeonHelperContinuedDB.greetingMessage, "INSTANCE_CHAT")
+        StartRun(not isInitialLogin and not isReloadingUi)
 
     elseif event == "LFG_COMPLETION_REWARD" then
         local elapsed = 0
         if startTime then
-            elapsed = GetTime() - startTime
+            elapsed = math.max(0, GetCurrentTime() - startTime)
         end
 
         lastTimeStr = FormatTime(elapsed)
         print("Dungeon completed in: " .. lastTimeStr)
+        ClearRun()
 
         if lastTimeStr and DungeonHelperContinuedDB.reportTimeToParty then
             C_Timer.After(1, function()

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Dungeon Helper Continued is a World of Warcraft addon (Interface 120000 / WoW 12.0+). It automates courtesies for Dungeon Finder and Raid Finder runs: auto-greets the party on zone-in, tracks elapsed dungeon time, reports completion time, and offers a quick-leave dialog with a goodbye message.
+Dungeon Helper Continued is a World of Warcraft addon (Interface 120007 / WoW 12.0+). It automates courtesies for Dungeon Finder and Raid Finder runs: auto-greets the party on zone-in, tracks elapsed dungeon time, reports completion time, and offers a quick-leave dialog with a goodbye message.
 
 The addon only activates in queued content (LFG/LFR). It does not trigger in Mythic+, premade groups, battlegrounds, or arenas. This is enforced by checking `IsInGroup(LE_PARTY_CATEGORY_INSTANCE)` (only true for auto-matched groups) and listening to `LFG_COMPLETION_REWARD` (only fires for queued content).
 
